@@ -64,16 +64,6 @@ Performix is a comprehensive, enterprise-grade goal setting and tracking portal 
 
 ---
 
-## 📸 Screenshots
-
-*(Replace these placeholders with actual screenshots of your application)*
-
-| Dashboard | Goal Setting | AI Suggestions |
-|:---:|:---:|:---:|
-| ![Dashboard Placeholder](https://via.placeholder.com/400x250?text=Dashboard) | ![Goal Setting Placeholder](https://via.placeholder.com/400x250?text=Goal+Setting) | ![AI Placeholder](https://via.placeholder.com/400x250?text=AI+Suggestions) |
-
----
-
 ## 💻 Tech Stack
 
 ### Frontend
