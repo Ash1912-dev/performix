@@ -36,12 +36,12 @@ Performix is a comprehensive, enterprise-grade goal setting and tracking portal 
 ### 👥 User Roles
 - 🧑‍💻 **Employee**: Create goals, submit quarterly check-ins, and view progress dashboards.
 - 👔 **Manager**: Approve/return goals, review team check-ins, inline-edit goals, and push shared goals.
-- 🛡️ **Admin**: Manage user lifecycles, unlock goals for edge cases, view org-wide reports, and configure escalation rules.
+- 🛡️ **Admin**: Manage user lifecycles, unlock goals for edge cases, configure cycle windows, view org-wide reports, and configure escalation rules.
 
 ### 📊 Reporting & Governance
 - ✅ **Achievement Report**: Robust reporting with Excel (CSV/XLSX) export capabilities.
 - ✅ **Completion Dashboard**: Real-time visibility into org-wide check-in statuses.
-- ✅ **Audit Trail**: Complete traceability (who changed what and when) with CSV export.
+- ✅ **Audit Trail**: Complete traceability (who changed what and when) with CSV export and post-lock filtering.
 - ✅ **Manager Effectiveness Report**: Insights into manager engagement and response times.
 
 ---
@@ -234,6 +234,7 @@ Performix is engineered to meet and exceed hackathon evaluation criteria:
 ### Reports & Analytics
 - `GET /api/reports/achievement`
 - `GET /api/reports/achievement/export`
+- `GET /api/reports/achievement/export-csv`
 - `GET /api/reports/manager-effectiveness`
 - `GET /api/analytics/org-overview`
 - `GET /api/analytics/employee-trends`
@@ -250,6 +251,8 @@ Performix is engineered to meet and exceed hackathon evaluation criteria:
 - `PUT /api/admin/goals/:id/unlock`
 - `GET /api/admin/cycle-status`
 - `GET /api/admin/completion-dashboard`
+- `GET /api/admin/cycle-config`
+- `PUT /api/admin/cycle-config`
 
 ### Escalation Engine
 - `GET /api/escalation/rules`
