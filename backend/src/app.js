@@ -42,6 +42,11 @@ app.use('/api/escalation', escalationRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/ai', aiRoutes);
 
+// Health check for frontend wake-up detection
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Performix API is running' });
+});
+
 app.get('/', (req, res) => {
   res.json({ message: 'Performix API running...' });
 });

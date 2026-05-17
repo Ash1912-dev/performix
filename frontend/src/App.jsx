@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 
 import ProtectedRoute from '@/components/ProtectedRoute';
+import WakeUpScreen from '@/components/WakeUpScreen';
 import AdminLayout from '@/components/layouts/AdminLayout';
 import EmployeeLayout from '@/components/layouts/EmployeeLayout';
 import ManagerLayout from '@/components/layouts/ManagerLayout';
@@ -28,6 +29,7 @@ import AdminGoals from '@/pages/admin/Goals';
 import AdminReports from '@/pages/admin/Reports';
 import AdminUsers from '@/pages/admin/Users';
 import NotFound from '@/pages/NotFound';
+import useBackendWakeUp from '@/hooks/useBackendWakeUp';
 import { useAuthStore } from '@/store/authStore';
 
 const queryClient = new QueryClient();
@@ -43,6 +45,12 @@ function AuthBootstrap() {
 }
 
 function App() {
+  const { isAwake, hasTimedOut } = useBackendWakeUp();
+
+  if (!isAwake) {
+    return <WakeUpScreen hasTimedOut={hasTimedOut} />;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -89,3 +97,4 @@ function App() {
 }
 
 export default App;
+
