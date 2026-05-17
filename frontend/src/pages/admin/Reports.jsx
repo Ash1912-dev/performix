@@ -11,6 +11,7 @@ import toast from'react-hot-toast';
 
 import {
  exportAchievementReport,
+ exportAchievementCSV,
  exportAuditLog,
  getAchievementReport,
  getManagerEffectiveness,
@@ -65,6 +66,20 @@ function ReportsPage() {
  },
  onError: () => toast.error('Failed to export report'),
  });
+
+ const exportCSVMutation = useMutation({
+  mutationFn: () =>
+  exportAchievementCSV({
+  cycleYear,
+  ...(quarter && { quarter }),
+  ...(department && { department }),
+  }),
+  onSuccess: (blob) => {
+  downloadFile(blob, `achievement_report_${cycleYear}.csv`);
+  toast.success('CSV Report exported successfully');
+  },
+  onError: () => toast.error('Failed to export CSV report'),
+  });
 
  const exportAuditMutation = useMutation({
  mutationFn: () => exportAuditLog({}),
@@ -163,10 +178,11 @@ function ReportsPage() {
  {/* Results */}
  {reportLoading ? (
  <LoadingSkeleton type="table" rows={5} />
-) : reportGenerated && report.length === 0 ? (
- <p className="py-8 text-center text-sm text-gray-500">
- No results found for the selected filters.
- </p>
+ ) : reportGenerated && report.length === 0 ? (
+        <EmptyState
+          title="No results found"
+          description="No results found for the selected filters. Try adjusting your cycle year, quarter, or department."
+        />
 ) : report.length > 0 ? (
  <>
  <div className="overflow-x-auto rounded-2xl border border-slate-100">
@@ -229,6 +245,19 @@ function ReportsPage() {
  <Download className="size-4" />
 )}
  Export Excel
+ </Button>
+ <Button
+ variant="outline"
+ className="rounded-xl"
+ onClick={() => exportCSVMutation.mutate()}
+ disabled={exportCSVMutation.isPending}
+ >
+ {exportCSVMutation.isPending ? (
+ <Loader2 className="size-4 animate-spin" />
+) : (
+ <Download className="size-4" />
+)}
+ Export CSV
  </Button>
  <Button
  variant="outline"

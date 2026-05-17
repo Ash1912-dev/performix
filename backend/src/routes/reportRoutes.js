@@ -2,6 +2,7 @@ const express = require('express');
 const {
   getAchievementReport,
   exportAchievementReport,
+  exportAchievementCSV,
   getManagerEffectiveness,
 } = require('../controllers/reportController');
 const { protect, authorize } = require('../middleware/authMiddleware');
@@ -15,6 +16,11 @@ router.get(
   '/achievement/export',
   authorize('admin', 'manager'),
   exportAchievementReport
+);
+router.get(
+  '/achievement/export-csv',
+  authorize('admin', 'manager'),
+  exportAchievementCSV
 );
 router.get(
   '/manager-effectiveness',

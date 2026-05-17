@@ -7,6 +7,8 @@ const {
   unlockGoal,
   getCycleStatus,
   getCompletionDashboard,
+  getCycleConfig,
+  updateCycleConfig,
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -21,5 +23,7 @@ router.delete('/users/:id', deleteUser);
 router.put('/goals/:id/unlock', unlockGoal);
 router.get('/cycle-status', getCycleStatus);
 router.get('/completion-dashboard', getCompletionDashboard);
+router.get('/cycle-config', getCycleConfig);
+router.put('/cycle-config', updateCycleConfig);
 
 module.exports = router;

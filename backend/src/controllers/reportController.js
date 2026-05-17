@@ -129,6 +129,37 @@ const exportAchievementReport = async (req, res) => {
   }
 };
 
+const exportAchievementCSV = async (req, res) => {
+  try {
+    const data = await buildAchievementRows(req);
+    const headers = [
+      'Employee Name', 'Department', 'Goal Title', 'Thrust Area', 'UoM Type',
+      'Planned Target', 'Actual Achievement', 'Progress Score %', 'Status',
+      'Quarter', 'Cycle Year'
+    ];
+    
+    const rows = data.map(r => [
+      r.employeeName, r.department, r.goalTitle, r.thrustArea,
+      r.uomType, r.plannedTarget, r.actualAchievement,
+      r.progressScore, r.status, r.quarter, r.cycleYear
+    ]);
+    
+    const csv = [headers, ...rows].map(row => 
+      row.map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(',')
+    ).join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=achievement-report.csv');
+    res.send(csv);
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to export CSV report',
+      error: error.message,
+    });
+  }
+};
+
 const getManagerEffectiveness = async (req, res) => {
   try {
     const cycleYear = new Date().getFullYear();
@@ -206,5 +237,6 @@ const getManagerEffectiveness = async (req, res) => {
 module.exports = {
   getAchievementReport,
   exportAchievementReport,
+  exportAchievementCSV,
   getManagerEffectiveness,
 };

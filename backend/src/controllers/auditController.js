@@ -2,7 +2,7 @@ const AuditLog = require('../models/AuditLog');
 const Goal = require('../models/Goal');
 const GoalSheet = require('../models/GoalSheet');
 
-const buildAuditFilters = (query) => {
+const buildAuditFilters = async (query) => {
   const filter = {};
 
   if (query.changeType) {
@@ -17,6 +17,12 @@ const buildAuditFilters = (query) => {
     filter.createdAt = {};
     if (query.from) filter.createdAt.$gte = new Date(query.from);
     if (query.to) filter.createdAt.$lte = new Date(query.to);
+  }
+
+  if (query.lockedOnly === 'true') {
+    const lockedGoals = await Goal.find({ isLocked: true }).select('_id');
+    const lockedGoalIds = lockedGoals.map(g => g._id);
+    filter.goalId = { $in: lockedGoalIds };
   }
 
   return filter;
@@ -35,7 +41,7 @@ const escapeCsv = (value) => {
 
 const getAuditLogs = async (req, res) => {
   try {
-    const filter = buildAuditFilters(req.query);
+    const filter = await buildAuditFilters(req.query);
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;

@@ -44,11 +44,12 @@ function AuditLogPage() {
  const [employeeSearch, setEmployeeSearch] = useState('');
  const [dateFrom, setDateFrom] = useState('');
  const [dateTo, setDateTo] = useState('');
+ const [lockedOnly, setLockedOnly] = useState(false);
  const [expandedRows, setExpandedRows] = useState({});
  const limit = 15;
 
  const { data, isLoading } = useQuery({
- queryKey: ['auditLogs', { page, changeType, employeeId: employeeSearch, dateFrom, dateTo }],
+ queryKey: ['auditLogs', { page, changeType, employeeId: employeeSearch, dateFrom, dateTo, lockedOnly }],
  queryFn: () =>
  getAuditLogs({
  page,
@@ -57,6 +58,7 @@ function AuditLogPage() {
  ...(employeeSearch && { employeeId: employeeSearch }),
  ...(dateFrom && { dateFrom }),
  ...(dateTo && { dateTo }),
+ ...(lockedOnly && { lockedOnly: 'true' }),
  }),
  });
 
@@ -70,6 +72,7 @@ function AuditLogPage() {
  ...(employeeSearch && { employeeId: employeeSearch }),
  ...(dateFrom && { dateFrom }),
  ...(dateTo && { dateTo }),
+ ...(lockedOnly && { lockedOnly: 'true' }),
  }),
  onSuccess: (blob) => {
  downloadFile(blob, `audit_log_${new Date().toISOString().slice(0, 10)}.csv`);
@@ -205,6 +208,21 @@ function AuditLogPage() {
  }}
  placeholder="To"
  />
+ <div className="flex items-center gap-2">
+ <input
+ type="checkbox"
+ id="lockedOnly"
+ checked={lockedOnly}
+ onChange={(e) => {
+ setLockedOnly(e.target.checked);
+ setPage(1);
+ }}
+ className="size-4 rounded border-gray-300"
+ />
+ <label htmlFor="lockedOnly" className="text-sm text-gray-600">
+ Showing changes made after goal lock date
+ </label>
+ </div>
  </CardContent>
  </Card>
 

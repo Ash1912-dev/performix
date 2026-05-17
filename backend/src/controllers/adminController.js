@@ -3,6 +3,7 @@ const Goal = require('../models/Goal');
 const GoalSheet = require('../models/GoalSheet');
 const CheckIn = require('../models/CheckIn');
 const AuditLog = require('../models/AuditLog');
+const CycleConfig = require('../models/CycleConfig');
 const { getCurrentCycleYear, getActiveQuarter, isQuarterWindowOpen } = require('../utils/cycleUtils');
 
 
@@ -325,6 +326,62 @@ const getCompletionDashboard = async (req, res) => {
   }
 };
 
+const getCycleConfig = async (req, res) => {
+  try {
+    const cycleYear = req.query.cycleYear || getCurrentCycleYear();
+    let config = await CycleConfig.findOne({ cycleYear: Number(cycleYear) });
+    
+    if (!config) {
+      config = await CycleConfig.create({
+        cycleYear: Number(cycleYear),
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: config,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch cycle config',
+      error: error.message,
+    });
+  }
+};
+
+const updateCycleConfig = async (req, res) => {
+  try {
+    const { cycleYear, goalSettingStart, q1Start, q2Start, q3Start, q4Start } = req.body;
+    let config = await CycleConfig.findOne({ cycleYear: Number(cycleYear) });
+    
+    if (!config) {
+      config = new CycleConfig({ cycleYear: Number(cycleYear) });
+    }
+
+    if (goalSettingStart) config.goalSettingStart = goalSettingStart;
+    if (q1Start) config.q1Start = q1Start;
+    if (q2Start) config.q2Start = q2Start;
+    if (q3Start) config.q3Start = q3Start;
+    if (q4Start) config.q4Start = q4Start;
+    
+    config.createdBy = req.user._id;
+    await config.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Cycle config updated successfully',
+      data: config,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update cycle config',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUser,
@@ -333,4 +390,6 @@ module.exports = {
   unlockGoal,
   getCycleStatus,
   getCompletionDashboard,
+  getCycleConfig,
+  updateCycleConfig,
 };

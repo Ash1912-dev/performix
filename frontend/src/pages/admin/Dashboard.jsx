@@ -1,4 +1,5 @@
-import { useQuery } from'@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
  CalendarDays,
  ClipboardList,
@@ -15,14 +16,16 @@ import {
 } from'lucide-react';
 import { Link } from'react-router-dom';
 
-import { getCycleStatus, getCompletionDashboard } from'@/api/adminApi';
-import { getOrgOverview } from'@/api/analyticsApi';
-import LoadingSkeleton from'@/components/shared/LoadingSkeleton';
-import StatCard from'@/components/shared/StatCard';
+import { getCycleStatus, getCompletionDashboard, getCycleConfig } from '@/api/adminApi';
+import { getOrgOverview } from '@/api/analyticsApi';
+import LoadingSkeleton from '@/components/shared/LoadingSkeleton';
+import StatCard from '@/components/shared/StatCard';
+import CycleConfigModal from '@/components/admin/CycleConfigModal';
 import { Badge } from'@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from'@/components/ui/card';
 
 function AdminDashboard() {
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
  const currentDate = new Date().toLocaleDateString(undefined, {
  weekday:'long',
  day:'numeric',
@@ -47,7 +50,12 @@ function AdminDashboard() {
  queryFn: getCompletionDashboard,
  });
 
- const isLoading = cycleLoading || orgLoading;
+ const { data: configData, isLoading: configLoading } = useQuery({
+ queryKey: ['cycleConfig', currentYear],
+ queryFn: () => getCycleConfig({ cycleYear: currentYear }),
+ });
+
+ const isLoading = cycleLoading || orgLoading || configLoading;
 
  if (isLoading) {
  return (
@@ -170,6 +178,47 @@ function AdminDashboard() {
  </div>
 ))}
  </CardContent>
+ </Card>
+
+ {/* Cycle Configuration Section */}
+ <Card>
+   <CardHeader className="flex flex-row items-center justify-between p-6 pb-3">
+     <CardTitle className="text-xl">Cycle Configuration</CardTitle>
+     <button
+       onClick={() => setIsConfigModalOpen(true)}
+       className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+     >
+       Configure Cycle
+     </button>
+   </CardHeader>
+   <CardContent className="p-6 pt-0">
+     {configData ? (
+       <div className="grid gap-4 md:grid-cols-5 text-sm">
+         <div>
+           <p className="font-semibold text-gray-500 uppercase">Goal Setting Start</p>
+           <p className="font-medium">{configData.goalSettingStart ? new Date(configData.goalSettingStart).toLocaleDateString() : 'N/A'}</p>
+         </div>
+         <div>
+           <p className="font-semibold text-gray-500 uppercase">Q1 Start</p>
+           <p className="font-medium">{configData.q1Start ? new Date(configData.q1Start).toLocaleDateString() : 'N/A'}</p>
+         </div>
+         <div>
+           <p className="font-semibold text-gray-500 uppercase">Q2 Start</p>
+           <p className="font-medium">{configData.q2Start ? new Date(configData.q2Start).toLocaleDateString() : 'N/A'}</p>
+         </div>
+         <div>
+           <p className="font-semibold text-gray-500 uppercase">Q3 Start</p>
+           <p className="font-medium">{configData.q3Start ? new Date(configData.q3Start).toLocaleDateString() : 'N/A'}</p>
+         </div>
+         <div>
+           <p className="font-semibold text-gray-500 uppercase">Q4 Start</p>
+           <p className="font-medium">{configData.q4Start ? new Date(configData.q4Start).toLocaleDateString() : 'N/A'}</p>
+         </div>
+       </div>
+     ) : (
+       <p className="text-sm text-gray-500">No custom configuration set for this cycle year.</p>
+     )}
+   </CardContent>
  </Card>
 
  {/* Top & Bottom Performers */}
@@ -343,6 +392,11 @@ function AdminDashboard() {
 ))}
  </div>
  </div>
+  <CycleConfigModal
+    isOpen={isConfigModalOpen}
+    onClose={() => setIsConfigModalOpen(false)}
+    config={configData}
+  />
  </div>
 );
 }

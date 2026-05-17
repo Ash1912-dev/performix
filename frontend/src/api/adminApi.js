@@ -42,3 +42,13 @@ export const exportAchievementReport = async (params) => {
   });
   return response.data;
 };
+
+export const getCycleConfig = async (params) => {
+  const response = await api.get('/admin/cycle-config', { params });
+  return response.data.data;
+};
+
+export const updateCycleConfig = async (data) => {
+  const response = await api.put('/admin/cycle-config', data);
+  return response.data.data;
+};

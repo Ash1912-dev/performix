@@ -1,23 +1,47 @@
+const CycleConfig = require('../models/CycleConfig');
+
 const getCurrentCycleYear = () => new Date().getFullYear();
+
+const getCurrentCycle = async () => {
+  const currentYear = getCurrentCycleYear();
+  const config = await CycleConfig.findOne({ cycleYear: currentYear, isActive: true });
+  const now = new Date();
+
+  if (config) {
+    if (now >= config.q4Start) return { quarter: 'Q4', label: 'Q4 Final', isOpen: true };
+    if (now >= config.q3Start) return { quarter: 'Q3', label: 'Q3 Check-in', isOpen: true };
+    if (now >= config.q2Start) return { quarter: 'Q2', label: 'Q2 Check-in', isOpen: true };
+    if (now >= config.q1Start) return { quarter: 'Q1', label: 'Q1 Check-in', isOpen: true };
+    if (now >= config.goalSettingStart) return { quarter: 'GOAL_SETTING', label: 'Goal Setting', isOpen: true };
+    return { quarter: null, label: 'No Active Window', isOpen: false };
+  }
+
+  const month = now.getMonth() + 1; // 1-12
+  const day = now.getDate();
+
+  if ((month === 5 && day >= 1) || month === 6) 
+    return { quarter: 'GOAL_SETTING', label: 'Goal Setting', isOpen: true };
+  if (month === 7) 
+    return { quarter: 'Q1', label: 'Q1 Check-in', isOpen: true };
+  if (month === 10) 
+    return { quarter: 'Q2', label: 'Q2 Check-in', isOpen: true };
+  if (month === 1) 
+    return { quarter: 'Q3', label: 'Q3 Check-in', isOpen: true };
+  if (month === 3 || month === 4) 
+    return { quarter: 'Q4', label: 'Q4 Final', isOpen: true };
+  
+  return { quarter: null, label: 'No Active Window', isOpen: false };
+};
 
 const getCurrentQuarter = () => {
   const month = new Date().getMonth() + 1;
+  const day = new Date().getDate();
 
-  if (month === 7) {
-    return 'Q1';
-  }
-
-  if (month === 10) {
-    return 'Q2';
-  }
-
-  if (month === 1) {
-    return 'Q3';
-  }
-
-  if (month === 3 || month === 4) {
-    return 'Q4';
-  }
+  if ((month === 5 && day >= 1) || month === 6) return 'goal-setting';
+  if (month === 7) return 'Q1';
+  if (month === 10) return 'Q2';
+  if (month === 1) return 'Q3';
+  if (month === 3 || month === 4) return 'Q4';
 
   return 'goal-setting';
 };
@@ -85,6 +109,7 @@ const daysBetween = (fromDate, toDate = new Date()) => {
 
 module.exports = {
   getCurrentCycleYear,
+  getCurrentCycle,
   getCurrentQuarter,
   getActiveQuarter: getCurrentQuarter, // Alias for compatibility
   getQuarterWindowMonths,
