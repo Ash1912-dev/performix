@@ -189,16 +189,16 @@ function ReportsPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100 bg-slate-50/60">
- <th className="px-4 py-3 text-left font-semibold text-gray-500">Employee</th>
- <th className="px-4 py-3 text-left font-semibold text-gray-500">Department</th>
- <th className="px-4 py-3 text-left font-semibold text-gray-500">Goal Title</th>
- <th className="hidden px-4 py-3 text-left font-semibold text-gray-500 md:table-cell">Thrust Area</th>
- <th className="hidden px-4 py-3 text-left font-semibold text-gray-500 lg:table-cell">UoM</th>
- <th className="hidden px-4 py-3 text-right font-semibold text-gray-500 lg:table-cell">Planned</th>
- <th className="hidden px-4 py-3 text-right font-semibold text-gray-500 lg:table-cell">Actual</th>
- <th className="px-4 py-3 text-right font-semibold text-gray-500">Score %</th>
- <th className="px-4 py-3 text-left font-semibold text-gray-500">Status</th>
- <th className="hidden px-4 py-3 text-left font-semibold text-gray-500 md:table-cell">Quarter</th>
+ <th className="px-4 py-3 text-left font-semibold text-slate-600">Employee</th>
+ <th className="px-4 py-3 text-left font-semibold text-slate-600">Department</th>
+ <th className="px-4 py-3 text-left font-semibold text-slate-600">Goal Title</th>
+ <th className="hidden px-4 py-3 text-left font-semibold text-slate-600 md:table-cell">Thrust Area</th>
+ <th className="hidden px-4 py-3 text-left font-semibold text-slate-600 lg:table-cell">UoM</th>
+ <th className="hidden px-4 py-3 text-right font-semibold text-slate-600 lg:table-cell">Planned</th>
+ <th className="hidden px-4 py-3 text-right font-semibold text-slate-600 lg:table-cell">Actual</th>
+ <th className="px-4 py-3 text-right font-semibold text-slate-600">Score %</th>
+ <th className="px-4 py-3 text-left font-semibold text-slate-600">Status</th>
+ <th className="hidden px-4 py-3 text-left font-semibold text-slate-600 md:table-cell">Quarter</th>
  </tr>
  </thead>
  <tbody>
@@ -298,10 +298,10 @@ function ReportsPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100 bg-slate-50/60">
- <th className="px-4 py-3 text-left font-semibold text-gray-500">Manager Name</th>
- <th className="px-4 py-3 text-center font-semibold text-gray-500">Team Size</th>
- <th className="px-4 py-3 text-right font-semibold text-gray-500">Check-in Rate %</th>
- <th className="px-4 py-3 text-right font-semibold text-gray-500">Avg Team Score</th>
+ <th className="px-4 py-3 text-left font-semibold text-slate-600">Manager Name</th>
+ <th className="px-4 py-3 text-center font-semibold text-slate-600">Team Size</th>
+ <th className="px-4 py-3 text-right font-semibold text-slate-600">Check-in Rate %</th>
+ <th className="px-4 py-3 text-right font-semibold text-slate-600">Avg Team Score</th>
  </tr>
  </thead>
  <tbody>

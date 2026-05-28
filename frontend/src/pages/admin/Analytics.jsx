@@ -290,10 +290,10 @@ function AnalyticsPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100">
- <th className="px-4 py-3 text-left font-semibold text-gray-500">Employee</th>
- <th className="px-4 py-3 text-left font-semibold text-gray-500">Department</th>
+ <th className="px-4 py-3 text-left font-semibold text-slate-600">Employee</th>
+ <th className="px-4 py-3 text-left font-semibold text-slate-600">Department</th>
  {QUARTER_LABELS.map((q) => (
- <th key={q} className="px-4 py-3 text-center font-semibold text-gray-500">{q}</th>
+ <th key={q} className="px-4 py-3 text-center font-semibold text-slate-600">{q}</th>
 ))}
  </tr>
  </thead>

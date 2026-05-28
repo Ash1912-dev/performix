@@ -70,7 +70,7 @@ function UserFormModal({ isOpen, onClose, existingUser }) {
  enabled: isOpen && selectedRole ==='employee',
  });
 
- const managers = managersData?.users || [];
+ const managers = Array.isArray(managersData) ? managersData : [];
 
  useEffect(() => {
  if (isOpen && existingUser) {

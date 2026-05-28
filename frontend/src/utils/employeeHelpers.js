@@ -8,7 +8,7 @@ export const QUARTER_CONFIG = {
 export const getActivePeriodInfo = (date = new Date()) => {
   const month = date.getMonth() + 1;
 
-  if (month === 5) {
+  if (month === 5 || month === 6) {
     return {
       period: 'Goal Setting',
       quarter: null,

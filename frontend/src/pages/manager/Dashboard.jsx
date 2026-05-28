@@ -268,18 +268,18 @@ function Dashboard() {
  </CardHeader>
  <CardContent className="p-0">
  {dashboardData.progressRows.length ? (
- <div className="overflow-x-auto">
+ <div className="overflow-x-auto rounded-2xl border border-slate-100">
  <table className="min-w-full text-sm">
  <thead>
- <tr className="border-b border-slate-200 text-left text-gray-500">
- <th className="px-6 py-4 font-semibold">Name</th>
- <th className="px-6 py-4 font-semibold">Goals Status</th>
+ <tr className="bg-slate-50 text-left">
+ <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
+ <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-600">Goals Status</th>
  {QUARTERS.map((quarter) => (
- <th key={quarter} className="px-6 py-4 font-semibold">
+ <th key={quarter} className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-600">
  {quarter} Score
  </th>
-))}
- <th className="px-6 py-4 font-semibold">Actions</th>
+ ))}
+ <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-600">Actions</th>
  </tr>
  </thead>
  <tbody>

@@ -201,12 +201,12 @@ function EscalationPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100">
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Name</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Trigger Type</th>
- <th className="px-6 py-4 text-center font-semibold text-gray-500">Days</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Chain</th>
- <th className="px-6 py-4 text-center font-semibold text-gray-500">Active</th>
- <th className="px-6 py-4 text-right font-semibold text-gray-500">Actions</th>
+ <th className="px-6 py-4 text-left font-semibold text-slate-600">Name</th>
+ <th className="px-6 py-4 text-left font-semibold text-slate-600">Trigger Type</th>
+ <th className="px-6 py-4 text-center font-semibold text-slate-600">Days</th>
+ <th className="px-6 py-4 text-left font-semibold text-slate-600">Chain</th>
+ <th className="px-6 py-4 text-center font-semibold text-slate-600">Active</th>
+ <th className="px-6 py-4 text-right font-semibold text-slate-600">Actions</th>
  </tr>
  </thead>
  <tbody>
@@ -332,13 +332,13 @@ function EscalationPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100">
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Employee</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Trigger Type</th>
- <th className="hidden px-6 py-4 text-left font-semibold text-gray-500 md:table-cell">Escalated To</th>
- <th className="hidden px-6 py-4 text-left font-semibold text-gray-500 lg:table-cell">Message</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Sent At</th>
- <th className="px-6 py-4 text-center font-semibold text-gray-500">Resolved</th>
- <th className="px-6 py-4 text-right font-semibold text-gray-500">Actions</th>
+ <th className="px-6 py-4 text-left font-semibold text-slate-600">Employee</th>
+ <th className="px-6 py-4 text-left font-semibold text-slate-600">Trigger Type</th>
+ <th className="hidden px-6 py-4 text-left font-semibold text-slate-600 md:table-cell">Escalated To</th>
+ <th className="hidden px-6 py-4 text-left font-semibold text-slate-600 lg:table-cell">Message</th>
+ <th className="px-6 py-4 text-left font-semibold text-slate-600">Sent At</th>
+ <th className="px-6 py-4 text-center font-semibold text-slate-600">Resolved</th>
+ <th className="px-6 py-4 text-right font-semibold text-slate-600">Actions</th>
  </tr>
  </thead>
  <tbody>

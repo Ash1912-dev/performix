@@ -382,12 +382,63 @@ const updateCycleConfig = async (req, res) => {
   }
 };
 
+const getAllGoals = async (req, res) => {
+  try {
+    const filter = {};
+
+    if (req.query.status) {
+      filter.status = req.query.status;
+    }
+
+    if (req.query.department) {
+      // We'll filter by department after populating
+    }
+
+    const goals = await Goal.find(filter)
+      .populate('employeeId', 'name department')
+      .populate('managerId', 'name')
+      .sort({ createdAt: -1 });
+
+    let filtered = goals;
+
+    if (req.query.department) {
+      const deptRegex = new RegExp(req.query.department, 'i');
+      filtered = goals.filter((g) => deptRegex.test(g.employeeId?.department));
+    }
+
+    if (req.query.name) {
+      const nameRegex = new RegExp(req.query.name, 'i');
+      filtered = filtered.filter((g) => nameRegex.test(g.employeeId?.name));
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 20;
+    const total = filtered.length;
+    const paginated = filtered.slice((page - 1) * limit, page * limit);
+
+    return res.status(200).json({
+      success: true,
+      data: paginated,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch goals',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUser,
   updateUser,
   deleteUser,
   unlockGoal,
+  getAllGoals,
   getCycleStatus,
   getCompletionDashboard,
   getCycleConfig,

@@ -25,6 +25,11 @@ export const unlockGoal = async (goalId) => {
   return response.data.data;
 };
 
+export const getAllGoals = async (params) => {
+  const response = await api.get('/admin/goals', { params });
+  return response.data;
+};
+
 export const getCycleStatus = async () => {
   const response = await api.get('/admin/cycle-status');
   return response.data.data;

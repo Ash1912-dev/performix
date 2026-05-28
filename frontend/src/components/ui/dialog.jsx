@@ -22,7 +22,7 @@ function DialogContent({ className, children, onOpenChange }) {
   return (
     <div
       className={cn(
-        'relative rounded-[2rem] border border-slate-200 bg-white text-gray-900 p-6 shadow-[0_30px_80px_-24px_rgba(15,23,42,0.4)] sm:p-8',
+        'relative rounded-2xl border border-slate-100 bg-white text-gray-900 p-6 shadow-2xl sm:p-8',
         className
       )}
     >
@@ -39,7 +39,7 @@ function DialogContent({ className, children, onOpenChange }) {
 }
 
 function DialogHeader({ className, ...props }) {
-  return <div className={cn('mb-6 space-y-2', className)} {...props} />;
+  return <div className={cn('mb-6 space-y-2 border-b border-slate-100 pb-4', className)} {...props} />;
 }
 
 function DialogTitle({ className, ...props }) {
@@ -52,7 +52,7 @@ function DialogTitle({ className, ...props }) {
 }
 
 function DialogDescription({ className, ...props }) {
-  return <p className={cn('text-gray-500 text-sm', className)} {...props} />;
+  return <p className={cn('text-slate-500 text-sm', className)} {...props} />;
 }
 
 function DialogFooter({ className, ...props }) {

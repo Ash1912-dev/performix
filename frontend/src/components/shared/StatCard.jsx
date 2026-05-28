@@ -1,39 +1,75 @@
-import { ArrowUpRight } from'lucide-react';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
-import { Card, CardContent } from'@/components/ui/card';
-import { cn } from'@/lib/utils';
+import { cn } from '@/lib/utils';
 
 const colorMap = {
- blue:'bg-blue-50 text-blue-600',
- green:'bg-emerald-50 text-emerald-600',
- amber:'bg-amber-50 text-amber-600',
- red:'bg-rose-50 text-rose-600',
+  blue: {
+    iconBg: 'bg-blue-50',
+    iconText: 'text-blue-600',
+    border: 'border-l-blue-500',
+  },
+  green: {
+    iconBg: 'bg-emerald-50',
+    iconText: 'text-emerald-600',
+    border: 'border-l-emerald-500',
+  },
+  amber: {
+    iconBg: 'bg-amber-50',
+    iconText: 'text-amber-600',
+    border: 'border-l-amber-500',
+  },
+  red: {
+    iconBg: 'bg-rose-50',
+    iconText: 'text-rose-600',
+    border: 'border-l-rose-500',
+  },
 };
 
-function StatCard({ title, value, icon: Icon, trend, color ='blue' }) {
- return (
- <Card className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
- <CardContent className="p-0">
- <div className="flex items-start justify-between gap-4">
- <div className="space-y-2">
- <p className="text-gray-500 text-sm font-medium">{title}</p>
- <div className="text-gray-900 text-2xl font-bold mt-1">
- {value}
- </div>
- {trend ? (
- <div className="text-green-600 text-sm mt-1 flex items-center gap-1">
- <ArrowUpRight className="size-3.5" />
- {trend}
- </div>
-) : null}
- </div>
- <div className={cn('rounded-2xl p-3', colorMap[color] || colorMap.blue)}>
- <Icon className="size-5" />
- </div>
- </div>
- </CardContent>
- </Card>
-);
+function StatCard({ title, value, icon: Icon, trend, color = 'blue' }) {
+  const colors = colorMap[color] || colorMap.blue;
+  const isPositive = trend && !trend.startsWith('-');
+
+  return (
+    <div
+      className={cn(
+        'bg-white rounded-2xl shadow-sm border border-slate-100 p-6 transition-all duration-200 hover:shadow-md border-l-4',
+        colors.border
+      )}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          <p className="text-sm text-slate-500 font-medium">{title}</p>
+          <div className="text-3xl font-black text-slate-900 mt-1">
+            {value}
+          </div>
+          {trend ? (
+            <div
+              className={cn(
+                'text-sm mt-1 flex items-center gap-1 font-medium',
+                isPositive ? 'text-green-600' : 'text-red-500'
+              )}
+            >
+              {isPositive ? (
+                <ArrowUpRight className="size-3.5" />
+              ) : (
+                <ArrowDownRight className="size-3.5" />
+              )}
+              {trend}
+            </div>
+          ) : null}
+        </div>
+        <div
+          className={cn(
+            'rounded-xl p-3',
+            colors.iconBg,
+            colors.iconText
+          )}
+        >
+          <Icon className="size-5" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default StatCard;

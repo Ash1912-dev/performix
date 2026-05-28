@@ -5,6 +5,7 @@ const {
   updateUser,
   deleteUser,
   unlockGoal,
+  getAllGoals,
   getCycleStatus,
   getCompletionDashboard,
   getCycleConfig,
@@ -20,6 +21,7 @@ router.get('/users', getAllUsers);
 router.post('/users', createUser);
 router.put('/users/:id', updateUser);
 router.delete('/users/:id', deleteUser);
+router.get('/goals', getAllGoals);
 router.put('/goals/:id/unlock', unlockGoal);
 router.get('/cycle-status', getCycleStatus);
 router.get('/completion-dashboard', getCompletionDashboard);

@@ -80,7 +80,7 @@ export function getCurrentQuarter(date = new Date()) {
   if (month === 10) return { quarter: 'Q2', label: 'Q2 Check-in', isOpen: true };
   if (month === 1) return { quarter: 'Q3', label: 'Q3 Check-in', isOpen: true };
   if (month === 3 || month === 4) return { quarter: 'Q4', label: 'Q4 Check-in', isOpen: true };
-  if (month === 5) return { quarter: null, label: 'Goal Setting', isOpen: true };
+  if (month === 5 || month === 6) return { quarter: 'GOAL_SETTING', label: 'Goal Setting', isOpen: true };
 
   return { quarter: null, label: 'No active window', isOpen: false };
 }

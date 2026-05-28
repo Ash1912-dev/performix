@@ -109,7 +109,7 @@ function SharedGoals() {
  </div>
 
  {isExpanded ? (
- <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+ <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
  {goal.recipients?.length ? (
  <div className="space-y-3">
  {goal.recipients.map((recipient) => (

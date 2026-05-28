@@ -152,17 +152,17 @@ function UsersPage() {
 ) : (
  <Card>
  <CardContent className="p-0">
- <div className="overflow-x-auto">
+ <div className="overflow-x-auto rounded-2xl">
  <table className="w-full text-sm">
  <thead>
- <tr className="border-b border-slate-100">
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Name</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Email</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Role</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Department</th>
- <th className="hidden px-6 py-4 text-left font-semibold text-gray-500 lg:table-cell">Manager</th>
- <th className="px-6 py-4 text-left font-semibold text-gray-500">Status</th>
- <th className="px-6 py-4 text-right font-semibold text-gray-500">Actions</th>
+ <tr className="bg-slate-50 border-b border-slate-100">
+ <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Email</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Role</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Department</th>
+ <th className="hidden px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-600 lg:table-cell">Manager</th>
+ <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
+ <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-600">Actions</th>
  </tr>
  </thead>
  <tbody>

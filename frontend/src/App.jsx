@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import {
   BrowserRouter,
-  Navigate,
   Route,
   Routes,
 } from 'react-router-dom';
@@ -16,6 +15,7 @@ import ManagerLayout from '@/components/layouts/ManagerLayout';
 import CheckIns from '@/pages/employee/CheckIns';
 import Dashboard from '@/pages/employee/Dashboard';
 import Goals from '@/pages/employee/Goals';
+import Landing from '@/pages/Landing';
 import Login from '@/pages/Login';
 import ManagerCheckIns from '@/pages/manager/CheckIns';
 import ManagerDashboard from '@/pages/manager/Dashboard';
@@ -56,7 +56,7 @@ function App() {
       <BrowserRouter>
         <AuthBootstrap />
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
 
           <Route element={<ProtectedRoute allowedRoles={['employee']} />}>

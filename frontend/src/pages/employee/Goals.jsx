@@ -91,9 +91,9 @@ function Goals() {
  <span>Total Weightage</span>
  <span>{totalWeightage} / 100%</span>
  </div>
- <div className="h-4 overflow-hidden rounded-full bg-slate-100">
+ <div className="h-2 overflow-hidden rounded-full bg-slate-100">
  <div
- className={`h-full rounded-full transition-all ${weightageTone}`}
+ className={`h-full rounded-full transition-all duration-700 ${weightageTone}`}
  style={{ width: `${Math.min(totalWeightage, 100)}%` }}
  />
  </div>

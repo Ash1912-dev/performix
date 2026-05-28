@@ -241,13 +241,13 @@ function AuditLogPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100">
- <th className="px-5 py-4 text-left font-semibold text-gray-500">Date / Time</th>
- <th className="px-5 py-4 text-left font-semibold text-gray-500">Changed By</th>
- <th className="hidden px-5 py-4 text-left font-semibold text-gray-500 md:table-cell">Role</th>
- <th className="px-5 py-4 text-left font-semibold text-gray-500">Change Type</th>
- <th className="hidden px-5 py-4 text-left font-semibold text-gray-500 lg:table-cell">Goal Title</th>
- <th className="px-5 py-4 text-left font-semibold text-gray-500">Changes</th>
- <th className="hidden px-5 py-4 text-left font-semibold text-gray-500 xl:table-cell">Description</th>
+ <th className="px-5 py-4 text-left font-semibold text-slate-600">Date / Time</th>
+ <th className="px-5 py-4 text-left font-semibold text-slate-600">Changed By</th>
+ <th className="hidden px-5 py-4 text-left font-semibold text-slate-600 md:table-cell">Role</th>
+ <th className="px-5 py-4 text-left font-semibold text-slate-600">Change Type</th>
+ <th className="hidden px-5 py-4 text-left font-semibold text-slate-600 lg:table-cell">Goal Title</th>
+ <th className="px-5 py-4 text-left font-semibold text-slate-600">Changes</th>
+ <th className="hidden px-5 py-4 text-left font-semibold text-slate-600 xl:table-cell">Description</th>
  <th className="w-12 px-5 py-4" />
  </tr>
  </thead>

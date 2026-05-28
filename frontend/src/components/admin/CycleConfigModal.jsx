@@ -44,6 +44,7 @@ export default function CycleConfigModal({ isOpen, onClose, config }) {
     onSuccess: () => {
       toast.success('Cycle configured successfully');
       queryClient.invalidateQueries({ queryKey: ['cycleConfig'] });
+      queryClient.invalidateQueries({ queryKey: ['cycleStatus'] });
       onClose();
     },
     onError: (error) => {

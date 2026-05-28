@@ -202,16 +202,16 @@ function TeamGoals() {
  </div>
 
  {isExpanded ? (
- <div className="overflow-x-auto rounded-3xl border border-slate-200">
+ <div className="overflow-x-auto rounded-2xl border border-slate-100">
  <table className="min-w-full text-sm">
- <thead className="bg-slate-50 text-left text-gray-500">
+ <thead className="bg-slate-50 text-left">
  <tr>
- <th className="px-4 py-3 font-semibold">Title</th>
- <th className="px-4 py-3 font-semibold">Thrust Area</th>
- <th className="px-4 py-3 font-semibold">UoM</th>
- <th className="px-4 py-3 font-semibold">Target</th>
- <th className="px-4 py-3 font-semibold">Weightage</th>
- <th className="px-4 py-3 font-semibold">Status</th>
+ <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Title</th>
+ <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Thrust Area</th>
+ <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">UoM</th>
+ <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Target</th>
+ <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Weightage</th>
+ <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
  </tr>
  </thead>
  <tbody>

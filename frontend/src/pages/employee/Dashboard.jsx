@@ -193,7 +193,7 @@ function Dashboard() {
  metrics.totalWeightage === 100 ? (
  <Button
  type="button"
- className="rounded-xl bg-slate-950 text-white hover:bg-slate-800"
+ className="rounded-xl bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25 transition-all"
  disabled={submitMutation.isPending}
  onClick={() => submitMutation.mutate()}
  >
@@ -239,9 +239,9 @@ function Dashboard() {
  {goal.weightage}%
  </span>
  </div>
- <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100">
+ <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
  <div
- className="h-full rounded-full bg-blue-600 transition-all duration-500"
+ className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-700"
  style={{ width: `${Math.min(progress, 100)}%` }}
  />
  </div>

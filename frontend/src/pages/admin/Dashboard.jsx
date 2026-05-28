@@ -66,9 +66,25 @@ function AdminDashboard() {
 );
  }
 
- const cycle = cycleData || {};
- const overview = orgData || {};
- const completion = completionData || [];
+  const rawCycle = cycleData || {};
+  const overview = orgData || {};
+  const completion = completionData || [];
+
+  // Map backend fields and compute percentages client-side
+  const cycle = {
+    ...rawCycle,
+    activeQuarter: rawCycle.currentQuarter || rawCycle.activeQuarter || null,
+    windowOpen: rawCycle.quarterWindowOpen ?? rawCycle.windowOpen ?? false,
+    sheetsSubmittedPct: rawCycle.totalEmployees
+      ? Math.round(((rawCycle.submittedSheets || 0) / rawCycle.totalEmployees) * 100)
+      : 0,
+    sheetsApprovedPct: rawCycle.totalEmployees
+      ? Math.round(((rawCycle.approvedSheets || 0) / rawCycle.totalEmployees) * 100)
+      : 0,
+    checkInsCompletedPct: rawCycle.totalEmployees
+      ? Math.round(((rawCycle.checkInsCompleted || 0) / rawCycle.totalEmployees) * 100)
+      : 0,
+  };
 
  const rankBadge = (rank) => {
  if (rank === 1) return <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-bold text-yellow-700">🥇 Gold</span>;
@@ -169,7 +185,7 @@ function AdminDashboard() {
  <span className="font-medium text-gray-700">{bar.label}</span>
  <span className="font-semibold text-gray-900">{Math.round(bar.value)}%</span>
  </div>
- <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+ <div className="h-2 overflow-hidden rounded-full bg-slate-100">
  <div
  className={`h-full rounded-full transition-all duration-700 ${bar.color}`}
  style={{ width: `${Math.min(bar.value, 100)}%` }}
@@ -241,10 +257,10 @@ function AdminDashboard() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100 text-left">
- <th className="pb-3 pr-4 font-semibold text-gray-500">Rank</th>
- <th className="pb-3 pr-4 font-semibold text-gray-500">Employee</th>
- <th className="pb-3 pr-4 font-semibold text-gray-500">Department</th>
- <th className="pb-3 text-right font-semibold text-gray-500">Avg Score</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Rank</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Employee</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Department</th>
+ <th className="pb-3 text-right font-semibold text-slate-600">Avg Score</th>
  </tr>
  </thead>
  <tbody>
@@ -285,10 +301,10 @@ function AdminDashboard() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100 text-left">
- <th className="pb-3 pr-4 font-semibold text-gray-500">Rank</th>
- <th className="pb-3 pr-4 font-semibold text-gray-500">Employee</th>
- <th className="pb-3 pr-4 font-semibold text-gray-500">Department</th>
- <th className="pb-3 text-right font-semibold text-gray-500">Avg Score</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Rank</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Employee</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Department</th>
+ <th className="pb-3 text-right font-semibold text-slate-600">Avg Score</th>
  </tr>
  </thead>
  <tbody>
@@ -340,20 +356,20 @@ function AdminDashboard() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b border-slate-100 text-left">
- <th className="pb-3 pr-4 font-semibold text-gray-500">Manager Name</th>
- <th className="pb-3 pr-4 font-semibold text-gray-500">Team Size</th>
- <th className="pb-3 pr-4 font-semibold text-gray-500">Check-ins Done</th>
- <th className="pb-3 text-right font-semibold text-gray-500">Pending</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Manager Name</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Team Size</th>
+ <th className="pb-3 pr-4 font-semibold text-slate-600">Check-ins Done</th>
+ <th className="pb-3 text-right font-semibold text-slate-600">Pending</th>
  </tr>
  </thead>
  <tbody>
  {completion.slice(0, 5).map((mgr, idx) => (
  <tr key={mgr._id || idx} className="border-b border-slate-50 last:border-0">
  <td className="py-3 pr-4 font-medium text-gray-900">{mgr.managerName || mgr.name}</td>
- <td className="py-3 pr-4 text-gray-600">{mgr.teamSize}</td>
+ <td className="py-3 pr-4 text-gray-600">{mgr.total || mgr.teamSize || 0}</td>
  <td className="py-3 pr-4">
  <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
- {mgr.checkInsDone || mgr.completed || 0}
+ {mgr.done || mgr.checkInsDone || mgr.completed || 0}
  </span>
  </td>
  <td className="py-3 text-right">
