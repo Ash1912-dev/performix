@@ -37,16 +37,15 @@ function TeamGoals() {
  });
 
  const approveMutation = useMutation({
- mutationFn: approveGoalSheet,
- onSuccess: () => {
- toast.success('Goal sheet approved successfully');
- queryClient.invalidateQueries({ queryKey: ['managerTeamGoals'] });
- setApproveCandidate(null);
- },
- onError: (error) => {
- toast.error(error.response?.data?.message ||'Unable to approve goal sheet');
- },
- });
+    mutationFn: (sheetId) => approveGoalSheet(sheetId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['managerTeamGoals']);
+      toast.success('Goal sheet approved successfully!');
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to approve goal sheet');
+    }
+  });
 
  const teamSheets = useMemo(() => (Array.isArray(data) ? data.filter((s) => s.status !== 'no-sheet') : []), [data]);
  const teamMembers = useMemo(
@@ -172,18 +171,18 @@ function TeamGoals() {
  {isSubmitted ? (
  <>
  <Button
- type="button"
- className="rounded-xl bg-emerald-500 text-white hover:bg-emerald-600"
- onClick={() =>
- setApproveCandidate({
- id: sheet._id,
- employeeName: sheet.employee?.name,
- })
- }
- >
- <CheckCircle2 className="size-4" />
- Approve
- </Button>
+  type="button"
+  className="rounded-xl bg-emerald-500 text-white hover:bg-emerald-600"
+  onClick={() => {
+    if (window.confirm('Approve this goal sheet? Goals will be locked.')) {
+      approveMutation.mutate(sheet._id);
+    }
+  }}
+  disabled={approveMutation.isPending}
+>
+  <CheckCircle2 className="size-4" />
+  {approveMutation.isPending ? 'Approving...' : 'Approve'}
+</Button>
  <Button
  type="button"
  className="rounded-xl bg-amber-500 text-white hover:bg-amber-600"

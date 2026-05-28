@@ -2,7 +2,7 @@ import api from './axios';
 
 export const getAllUsers = async (params) => {
   const response = await api.get('/admin/users', { params });
-  return response.data.data;
+  return response.data;
 };
 
 export const createUser = async (data) => {
@@ -17,7 +17,7 @@ export const updateUser = async (id, data) => {
 
 export const deleteUser = async (id) => {
   const response = await api.delete(`/admin/users/${id}`);
-  return response.data.data;
+  return response.data;
 };
 
 export const unlockGoal = async (goalId) => {

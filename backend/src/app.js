@@ -68,6 +68,28 @@ app.get('/api/debug/mydata', async (req, res) => {
   }
 });
 
+app.get('/api/debug/routes', (req, res) => {
+  const routes = [];
+  app._router.stack.forEach(middleware => {
+    if (middleware.route) {
+      routes.push({
+        path: middleware.route.path,
+        method: Object.keys(middleware.route.methods)[0].toUpperCase()
+      });
+    } else if (middleware.name === 'router') {
+      middleware.handle.stack.forEach(handler => {
+        if (handler.route) {
+          routes.push({
+            path: handler.route.path,
+            method: Object.keys(handler.route.methods)[0].toUpperCase()
+          });
+        }
+      });
+    }
+  });
+  res.json(routes);
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });

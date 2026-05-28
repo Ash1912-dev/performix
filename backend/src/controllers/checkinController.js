@@ -252,63 +252,33 @@ const getTeamCheckIns = async (req, res) => {
 
 const addManagerComment = async (req, res) => {
   try {
-    const { managerComment } = req.body;
-
-    if (!managerComment) {
-      return res.status(400).json({
-        success: false,
-        message: 'Manager comment is required',
-      });
-    }
-
-    const checkIn = await CheckIn.findById(req.params.id).populate(
-      'employeeId',
-      'managerId name'
-    );
-
-    if (!checkIn) {
-      return res.status(404).json({
-        success: false,
-        message: 'Check-in not found',
-      });
-    }
-
-    if (
-      !checkIn.employeeId.managerId ||
-      checkIn.employeeId.managerId.toString() !== req.user._id.toString()
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: 'You are not authorized to comment on this check-in',
-      });
-    }
-
-    const oldValue = checkIn.toObject();
-
-    checkIn.managerComment = managerComment;
-    checkIn.commentedAt = new Date();
-    checkIn.commentedBy = req.user._id;
-    await checkIn.save();
-
-    await createAuditLog({
-      goalId: checkIn.goalId,
+    const { id } = req.params;
+    const { comment } = req.body;
+    if (!comment) return res.status(400).json({ 
+      success: false, message: 'Comment is required' 
+    });
+    const checkin = await CheckIn.findById(id);
+    if (!checkin) return res.status(404).json({ 
+      success: false, message: 'Check-in not found' 
+    });
+    checkin.managerComment = comment;
+    checkin.commentedBy = req.user._id;
+    checkin.commentedAt = new Date();
+    await checkin.save();
+    await AuditLog.create({
+      goalId: checkin.goalId,
       changedBy: req.user._id,
       changeType: 'manager_comment_added',
-      oldValue,
-      newValue: checkIn.toObject(),
-      description: `Manager comment updated for ${checkIn.quarter} check-in`,
+      description: 'Manager added check-in comment'
     });
-
-    return res.status(200).json({
-      success: true,
-      message: 'Manager comment saved successfully',
-      data: checkIn,
+    return res.json({ 
+      success: true, 
+      data: checkin,
+      message: 'Comment saved successfully' 
     });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to save manager comment',
-      error: error.message,
+  } catch (err) {
+    return res.status(500).json({ 
+      success: false, message: err.message 
     });
   }
 };

@@ -29,7 +29,7 @@ function CheckIns() {
  const queryClient = useQueryClient();
  const activePeriod = getManagerActivePeriod();
  const [selectedEmployeeId, setSelectedEmployeeId] = useState('');
- const [commentDrafts, setCommentDrafts] = useState({});
+ const [comments, setComments] = useState({});
  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
  const {
@@ -37,25 +37,19 @@ function CheckIns() {
  isLoading: checkInsLoading,
  isError: checkInsError,
  } = useQuery({
- queryKey: ['managerTeamCheckIns'],
+ queryKey: ['teamCheckIns'],
  queryFn: getTeamCheckIns,
  });
 
  const commentMutation = useMutation({
  mutationFn: ({ checkinId, comment }) => addManagerComment(checkinId, comment),
- onSuccess: (_, variables) => {
- toast.success('Manager comment saved');
- // Clear the draft for this check-in so the textarea shows the refreshed server value.
- setCommentDrafts((current) => {
-  const next = { ...current };
-  delete next[variables.checkinId];
-  return next;
- });
- queryClient.invalidateQueries({ queryKey: ['managerTeamCheckIns'] });
+ onSuccess: () => {
+ queryClient.invalidateQueries(['teamCheckIns']);
+ toast.success('Comment saved!');
  },
- onError: (error) => {
- toast.error(error.response?.data?.message || 'Unable to save comment');
- },
+ onError: (err) => {
+ toast.error(err.response?.data?.message || 'Failed to save comment');
+ }
  });
 
  const derivedData = useMemo(() => {
@@ -267,13 +261,14 @@ function CheckIns() {
  </label>
  <Textarea
  rows={4}
- value={commentDrafts[checkIn._id] ?? checkIn.managerComment ??''}
- onChange={(event) =>
- setCommentDrafts((current) => ({
- ...current,
- [checkIn._id]: event.target.value,
+ value={comments[checkIn._id] ?? checkIn.managerComment ?? ''}
+ onChange={(e) =>
+ setComments((prev) => ({
+ ...prev,
+ [checkIn._id]: e.target.value,
  }))
  }
+ placeholder="Add feedback..."
  />
  <Button
  type="button"
@@ -282,13 +277,12 @@ function CheckIns() {
  onClick={() =>
  commentMutation.mutate({
  checkinId: checkIn._id,
- comment:
- commentDrafts[checkIn._id] ?? checkIn.managerComment ??'',
+ comment: comments[checkIn._id],
  })
  }
  >
  <Save className="size-4" />
- Save Comment
+ {commentMutation.isPending ? 'Saving...' : 'Save Comment'}
  </Button>
  </div>
  </div>

@@ -550,265 +550,117 @@ const getTeamGoals = async (req, res) => {
 
 const approveGoalSheet = async (req, res) => {
   try {
-    const goalSheet = await GoalSheet.findById(req.params.sheetId);
-
-    if (!goalSheet) {
-      return res.status(404).json({
-        success: false,
-        message: 'Goal sheet not found',
+    const { sheetId } = req.params;
+    const sheet = await GoalSheet.findById(sheetId);
+    if (!sheet) return res.status(404).json({ 
+      success: false, message: 'Goal sheet not found' 
+    });
+    if (sheet.status === 'approved') 
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Goal sheet already approved' 
       });
-    }
-
-    const employee = await User.findById(goalSheet.employeeId).select(
-      'managerId name email'
-    );
-
-    if (!employee || employee.managerId?.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'You are not authorized to approve this goal sheet',
-      });
-    }
-
-    if (goalSheet.status !== 'submitted') {
-      return res.status(400).json({
-        success: false,
-        message: 'Only submitted goal sheets can be approved',
-      });
-    }
-
-    goalSheet.totalWeightage = await calculateTotalWeightage(goalSheet.goals);
-
-    if (goalSheet.totalWeightage !== 100) {
-      return res.status(400).json({
-        success: false,
-        message: 'Goal sheet total weightage must be 100 before approval',
-      });
-    }
-
-    const oldGoalSheet = goalSheet.toObject();
-    goalSheet.status = 'approved';
-    goalSheet.approvedAt = new Date();
-    await goalSheet.save();
-
+    sheet.status = 'approved';
+    sheet.approvedAt = new Date();
+    await sheet.save();
     await Goal.updateMany(
-      { _id: { $in: goalSheet.goals } },
-      { $set: { status: 'approved', isLocked: true } }
+      { _id: { $in: sheet.goals } },
+      { $set: { isLocked: true, status: 'approved' } }
     );
-
-    const populatedGoalSheet = await populateGoalSheet(
-      GoalSheet.findById(goalSheet._id)
-    );
-
-    await createAuditLog({
-      goalSheetId: goalSheet._id,
+    await AuditLog.create({
+      goalSheetId: sheet._id,
       changedBy: req.user._id,
       changeType: 'sheet_approved',
-      oldValue: oldGoalSheet,
-      newValue: goalSheet.toObject(),
-      description: `Goal sheet approved for cycle ${goalSheet.cycleYear}`,
+      description: 'Goal sheet approved by manager'
     });
-
-    const employeeUser = await User.findById(goalSheet.employeeId).select(
-      'name email'
-    );
-
-    if (employeeUser?.email) {
-      await sendGoalApprovalEmail({
-        to: employeeUser.email,
-        employeeName: employeeUser.name,
+    try {
+      const employee = await User.findById(sheet.employeeId);
+      await sendGoalApprovalEmail({ 
+        to: employee.email, 
+        employeeName: employee.name 
       });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'Goal sheet approved successfully',
-      data: populatedGoalSheet,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to approve goal sheet',
-      error: error.message,
+    } catch(e) {}
+    const updated = await GoalSheet.findById(sheetId)
+      .populate('goals');
+    return res.json({ success: true, data: updated });
+  } catch (err) {
+    return res.status(500).json({ 
+      success: false, message: err.message 
     });
   }
 };
 
 const returnGoalSheet = async (req, res) => {
   try {
-    const goalSheet = await GoalSheet.findById(req.params.sheetId);
+    const { sheetId } = req.params;
     const { reason } = req.body;
-
-    if (!goalSheet) {
-      return res.status(404).json({
-        success: false,
-        message: 'Goal sheet not found',
-      });
-    }
-
-    const employee = await User.findById(goalSheet.employeeId).select(
-      'managerId name'
-    );
-
-    if (!employee || employee.managerId?.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'You are not authorized to return this goal sheet',
-      });
-    }
-
-    if (goalSheet.status !== 'submitted') {
-      return res.status(400).json({
-        success: false,
-        message: 'Only submitted goal sheets can be returned',
-      });
-    }
-
-    const oldGoalSheet = goalSheet.toObject();
-    goalSheet.status = 'returned';
-    goalSheet.approvedAt = null;
-    await goalSheet.save();
-
+    const sheet = await GoalSheet.findById(sheetId);
+    if (!sheet) return res.status(404).json({ 
+      success: false, message: 'Goal sheet not found' 
+    });
+    sheet.status = 'returned';
+    await sheet.save();
     await Goal.updateMany(
-      { _id: { $in: goalSheet.goals } },
+      { _id: { $in: sheet.goals } },
       { $set: { status: 'returned', isLocked: false } }
     );
-
-    const populatedGoalSheet = await populateGoalSheet(
-      GoalSheet.findById(goalSheet._id)
-    );
-
-    await createAuditLog({
-      goalSheetId: goalSheet._id,
+    await AuditLog.create({
+      goalSheetId: sheet._id,
       changedBy: req.user._id,
       changeType: 'sheet_returned',
-      oldValue: oldGoalSheet,
-      newValue: goalSheet.toObject(),
-      description: `Goal sheet returned for cycle ${goalSheet.cycleYear}`,
+      description: reason || 'Goal sheet returned for rework'
     });
-
-    await createAuditLog({
-      goalSheetId: goalSheet._id,
-      changedBy: req.user._id,
-      changeType: 'goal_unlocked',
-      oldValue: { isLocked: true, status: 'submitted' },
-      newValue: { isLocked: false, status: 'returned' },
-      description: 'Goals unlocked after sheet was returned',
-    });
-
-    if (employee?.email) {
-      await sendGoalRejectionEmail({
-        to: employee.email,
+    try {
+      const employee = await User.findById(sheet.employeeId);
+      const manager = await User.findById(req.user._id);
+      await sendGoalRejectionEmail({ 
+        to: employee.email, 
         employeeName: employee.name,
-        managerName: req.user.name,
-        reason,
+        managerName: manager.name,
+        reason: reason || 'Please review your goals'
       });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'Goal sheet returned for rework',
-      data: populatedGoalSheet,
+    } catch(e) {}
+    return res.json({ 
+      success: true, 
+      data: sheet,
+      message: 'Goal sheet returned for rework' 
     });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to return goal sheet',
-      error: error.message,
+  } catch (err) {
+    return res.status(500).json({ 
+      success: false, message: err.message 
     });
   }
 };
 
 const updateGoalByManager = async (req, res) => {
   try {
+    const { goalId } = req.params;
     const { target, weightage, targetDate } = req.body;
-    const goal = await Goal.findById(req.params.goalId);
-
-    if (!goal) {
-      return res.status(404).json({
-        success: false,
-        message: 'Goal not found',
-      });
-    }
-
-    const employee = await User.findById(goal.employeeId).select('managerId');
-
-    if (!employee || employee.managerId?.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'You are not authorized to edit this goal',
-      });
-    }
-
-    const goalSheet = await GoalSheet.findOne({
-      employeeId: goal.employeeId,
-      cycleYear: CURRENT_CYCLE_YEAR,
-      goals: goal._id,
+    const goal = await Goal.findById(goalId);
+    if (!goal) return res.status(404).json({ 
+      success: false, message: 'Goal not found' 
     });
-
-    if (!goalSheet) {
-      return res.status(404).json({
-        success: false,
-        message: 'Goal sheet not found for this goal',
-      });
-    }
-
-    if (goalSheet.status !== 'submitted') {
-      return res.status(400).json({
-        success: false,
-        message: 'Manager can edit goals only while sheet is submitted',
-      });
-    }
-
-    if (goalSheet.status === 'approved' || goal.isLocked) {
-      return res.status(400).json({
-        success: false,
-        message: 'Approved or locked goals cannot be edited',
-      });
-    }
-
-    if (target !== undefined) {
-      goal.target = target;
-    }
-
-    if (targetDate !== undefined) {
+    if (goal.isLocked) return res.status(400).json({ 
+      success: false, 
+      message: 'Goal is locked and cannot be edited' 
+    });
+    if (target !== undefined) goal.target = target;
+    if (weightage !== undefined) goal.weightage = weightage;
+    if (targetDate !== undefined) 
       goal.targetDate = targetDate;
-    }
-
-    if (weightage !== undefined) {
-      if (Number(weightage) < 10) {
-        return res.status(400).json({
-          success: false,
-          message: 'Weightage must be at least 10',
-        });
-      }
-
-      goal.weightage = weightage;
-    }
-
     await goal.save();
-
-    goalSheet.totalWeightage = await calculateTotalWeightage(goalSheet.goals);
-    await goalSheet.save();
-
-    return res.status(200).json({
-      success: true,
-      message: 'Goal updated successfully by manager',
-      data: goal,
-      totalWeightage: goalSheet.totalWeightage,
-    });
-  } catch (error) {
-    if (error instanceof mongoose.Error.ValidationError) {
-      return res.status(400).json({
-        success: false,
-        message: error.message,
-      });
+    const sheet = await GoalSheet.findOne({ 
+      goals: goalId 
+    }).populate('goals');
+    if (sheet) {
+      sheet.totalWeightage = sheet.goals
+        .reduce((sum, g) => sum + g.weightage, 0);
+      await sheet.save();
     }
-
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to update goal',
-      error: error.message,
+    return res.json({ success: true, data: goal });
+  } catch (err) {
+    return res.status(500).json({ 
+      success: false, message: err.message 
     });
   }
 };

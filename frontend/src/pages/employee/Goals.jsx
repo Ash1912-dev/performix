@@ -24,14 +24,13 @@ function Goals() {
  });
 
  const deleteMutation = useMutation({
- mutationFn: deleteGoal,
+ mutationFn: (id) => deleteGoal(id),
  onSuccess: () => {
- toast.success('Goal deleted successfully');
- queryClient.invalidateQueries({ queryKey: ['myGoals'] });
- setDeleteCandidate(null);
+ queryClient.invalidateQueries(['myGoals']);
+ toast.success('Goal deleted!');
  },
- onError: (error) => {
- toast.error(error.response?.data?.message ||'Unable to delete goal');
+ onError: (err) => {
+ toast.error(err.response?.data?.message || 'Cannot delete locked goal');
  },
  });
 
@@ -159,11 +158,13 @@ function Goals() {
  type="button"
  variant="outline"
  className="rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
- disabled={goal.isLocked}
- onClick={() => setDeleteCandidate(goal)}
+ disabled={goal.isLocked || deleteMutation.isPending}
+ onClick={() => {
+ if (window.confirm('Delete this goal?')) deleteMutation.mutate(goal._id);
+ }}
  >
  {goal.isLocked ? <Lock className="size-4" /> : <Trash2 className="size-4" />}
- Delete
+ {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
  </Button>
  </div>
  </CardContent>

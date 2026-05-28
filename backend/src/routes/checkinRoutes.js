@@ -15,7 +15,7 @@ router.use(protect);
 router.post('/', authorize('employee'), submitCheckIn);
 router.get('/my', authorize('employee'), getMyCheckIns);
 router.get('/team', authorize('manager'), getTeamCheckIns);
-router.put('/:id/comment', authorize('manager'), addManagerComment);
 router.get('/summary/:employeeId', authorize('employee', 'manager', 'admin'), getCheckInSummary);
+router.put('/:id/comment', authorize('manager'), addManagerComment);
 
 module.exports = router;

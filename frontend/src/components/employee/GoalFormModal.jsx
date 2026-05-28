@@ -106,8 +106,28 @@ function GoalFormModal({
  const remainingWeightage =
  100 - (currentTotalWeightage - currentGoalWeightage + watchedWeightage);
 
- const mutation = useMutation({
- mutationFn: async (values) => {
+ const createMutation = useMutation({
+ mutationFn: (data) => createGoal(data),
+ onSuccess: () => {
+ queryClient.invalidateQueries(['myGoals']);
+ toast.success('Goal created successfully!');
+ onClose();
+ form.reset();
+ },
+ onError: (err) => toast.error(err.response?.data?.message || 'Failed to create goal')
+ });
+
+ const updateMutation = useMutation({
+ mutationFn: (data) => updateGoal(existingGoal._id, data),
+ onSuccess: () => {
+ queryClient.invalidateQueries(['myGoals']);
+ toast.success('Goal updated!');
+ onClose();
+ },
+ onError: (err) => toast.error(err.response?.data?.message || 'Failed to update goal')
+ });
+
+ const onSubmit = form.handleSubmit((values) => {
  const payload = {
  thrustArea: values.thrustArea,
  title: values.title,
@@ -117,24 +137,12 @@ function GoalFormModal({
  targetDate: values.uomType ==='timeline' ? values.targetDate : undefined,
  weightage: Number(values.weightage),
  };
-
- if (isEditing) {
- return updateGoal(existingGoal._id, payload);
+ if (existingGoal) {
+ updateMutation.mutate(payload);
+ } else {
+ createMutation.mutate(payload);
  }
-
- return createGoal(payload);
- },
- onSuccess: () => {
- toast.success(isEditing ?'Goal updated successfully' :'Goal created successfully');
- queryClient.invalidateQueries({ queryKey: ['myGoals'] });
- onClose();
- },
- onError: (error) => {
- toast.error(error.response?.data?.message ||'Unable to save goal');
- },
  });
-
- const onSubmit = form.handleSubmit((values) => mutation.mutate(values));
 
  const handleAISuggestion = (suggestion) => {
  if (suggestion.title) form.setValue('title', suggestion.title);
@@ -242,20 +250,20 @@ function GoalFormModal({
  <Button
  type="submit"
  className="rounded-xl bg-blue-600 text-white hover:bg-blue-700"
- disabled={mutation.isPending || (!isEditing && goalCount >= 8)}
+ disabled={createMutation.isPending || updateMutation.isPending || (!isEditing && goalCount >= 8)}
  >
- {mutation.isPending ? (
+ {createMutation.isPending || updateMutation.isPending ? (
  <>
  <Loader2 className="size-4 animate-spin" />
  Saving...
  </>
-) : isEditing ? (
-'Update Goal'
-) : goalCount >= 8 ? (
-'Maximum 8 Goals Reached'
-) : (
-'Create Goal'
-)}
+ ) : existingGoal ? (
+ 'Update Goal'
+ ) : goalCount >= 8 ? (
+ 'Maximum 8 Goals Reached'
+ ) : (
+ 'Create Goal'
+ )}
  </Button>
  </DialogFooter>
  </form>

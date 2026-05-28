@@ -95,21 +95,24 @@ function UserFormModal({ isOpen, onClose, existingUser }) {
  }
  }, [isOpen, existingUser, reset]);
 
- const mutation = useMutation({
- mutationFn: (data) => {
- if (isEdit) {
- return updateUser(existingUser._id, data);
- }
- return createUser(data);
- },
+ const createMutation = useMutation({
+ mutationFn: (data) => createUser(data),
  onSuccess: () => {
- toast.success(isEdit ?'User updated successfully' :'User created successfully');
- queryClient.invalidateQueries({ queryKey: ['users'] });
+ queryClient.invalidateQueries(['users']);
+ toast.success('User created!');
  onClose();
  },
- onError: (error) => {
- toast.error(error.response?.data?.message ||'Something went wrong');
+ onError: (err) => toast.error(err.response?.data?.message || 'Failed')
+ });
+
+ const updateMutation = useMutation({
+ mutationFn: ({ id, data }) => updateUser(id, data),
+ onSuccess: () => {
+ queryClient.invalidateQueries(['users']);
+ toast.success('User updated!');
+ onClose();
  },
+ onError: (err) => toast.error(err.response?.data?.message || 'Failed')
  });
 
  const onSubmit = (data) => {
@@ -120,7 +123,11 @@ function UserFormModal({ isOpen, onClose, existingUser }) {
  if (!payload.managerId) {
  delete payload.managerId;
  }
- mutation.mutate(payload);
+ if (isEdit) {
+ updateMutation.mutate({ id: existingUser._id, data: payload });
+ } else {
+ createMutation.mutate(payload);
+ }
  };
 
  return (
@@ -221,9 +228,9 @@ function UserFormModal({ isOpen, onClose, existingUser }) {
  <Button
  type="submit"
  className="rounded-xl bg-blue-600 text-white hover:bg-blue-700"
- disabled={mutation.isPending}
+ disabled={createMutation.isPending || updateMutation.isPending}
  >
- {mutation.isPending && <Loader2 className="size-4 animate-spin" />}
+ {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="size-4 animate-spin" />}
  {isEdit ?'Save Changes' :'Create User'}
  </Button>
  </DialogFooter>

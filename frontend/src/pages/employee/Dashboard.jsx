@@ -41,11 +41,11 @@ function Dashboard() {
  const submitMutation = useMutation({
  mutationFn: submitGoalSheet,
  onSuccess: () => {
- toast.success('Goal sheet submitted successfully');
- queryClient.invalidateQueries({ queryKey: ['myGoals'] });
+ queryClient.invalidateQueries(['myGoals']);
+ toast.success('Goal sheet submitted!');
  },
- onError: (error) => {
- toast.error(error.response?.data?.message ||'Unable to submit goal sheet');
+ onError: (err) => {
+ toast.error(err.response?.data?.message || 'Failed to submit');
  },
  });
 
@@ -195,10 +195,12 @@ function Dashboard() {
  type="button"
  className="rounded-xl bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25 transition-all"
  disabled={submitMutation.isPending}
- onClick={() => submitMutation.mutate()}
+ onClick={() => {
+ if (window.confirm('Submit goals for approval?')) submitMutation.mutate();
+ }}
  >
  <Send className="size-4" />
- Submit Goal Sheet
+ {submitMutation.isPending ? 'Submitting...' : 'Submit Goal Sheet'}
  </Button>
 ) : (
  <p className="text-sm text-gray-500">

@@ -178,26 +178,18 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-
+    if (!user) return res.status(404).json({ 
+      success: false, message: 'User not found' 
+    });
     user.isActive = false;
     await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: 'User deactivated successfully',
+    return res.json({ 
+      success: true, 
+      message: 'User deactivated successfully' 
     });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to deactivate user',
-      error: error.message,
+  } catch (err) {
+    return res.status(500).json({ 
+      success: false, message: err.message 
     });
   }
 };
@@ -205,37 +197,25 @@ const deleteUser = async (req, res) => {
 const unlockGoal = async (req, res) => {
   try {
     const goal = await Goal.findById(req.params.id);
-
-    if (!goal) {
-      return res.status(404).json({
-        success: false,
-        message: 'Goal not found',
-      });
-    }
-
-    const oldValue = goal.toObject();
+    if (!goal) return res.status(404).json({ 
+      success: false, message: 'Goal not found' 
+    });
     goal.isLocked = false;
     await goal.save();
-
-    await createAuditLog({
+    await AuditLog.create({
       goalId: goal._id,
       changedBy: req.user._id,
       changeType: 'goal_unlocked',
-      oldValue,
-      newValue: goal.toObject(),
-      description: `Goal unlocked by admin: ${goal.title}`,
+      description: `Goal unlocked by admin: ${goal.title}`
     });
-
-    return res.status(200).json({
-      success: true,
-      message: 'Goal unlocked successfully',
+    return res.json({ 
+      success: true, 
       data: goal,
+      message: 'Goal unlocked successfully' 
     });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to unlock goal',
-      error: error.message,
+  } catch (err) {
+    return res.status(500).json({ 
+      success: false, message: err.message 
     });
   }
 };

@@ -74,32 +74,32 @@ function CheckInModal({ isOpen, onClose, goal }) {
 );
  }, [achievementDate, actualAchievement, goal, zeroAchievement]);
 
- const mutation = useMutation({
- mutationFn: (values) =>
- submitCheckIn({
- goalId: goal._id,
- quarter: values.quarter,
- actualAchievement:
- goal.uomType ==='zero'
- ? values.zeroAchievement
- ? 0
- : 1
- : Number(values.actualAchievement),
- achievementDate: values.achievementDate || undefined,
- status: values.status,
- }),
+ const submitMutation = useMutation({
+ mutationFn: (data) => submitCheckIn(data),
  onSuccess: () => {
- toast.success('Check-in submitted successfully');
- queryClient.invalidateQueries({ queryKey: ['myCheckIns'] });
- queryClient.invalidateQueries({ queryKey: ['myGoals'] });
+ queryClient.invalidateQueries(['myCheckIns']);
+ queryClient.invalidateQueries(['myGoals']);
+ toast.success('Check-in submitted!');
  onClose();
+ form.reset();
  },
- onError: (error) => {
- toast.error(error.response?.data?.message ||'Unable to submit check-in');
- },
+ onError: (err) => toast.error(err.response?.data?.message || 'Failed to submit check-in')
  });
 
- const onSubmit = form.handleSubmit((values) => mutation.mutate(values));
+ const onSubmit = form.handleSubmit((data) => {
+ submitMutation.mutate({
+ goalId: goal._id,
+ quarter: activePeriod.quarter,
+ plannedTarget: goal.target,
+ actualAchievement:
+ goal.uomType ==='zero'
+ ? (data.zeroAchievement ? 0 : 1)
+ : Number(data.actualAchievement),
+ achievementDate: data.achievementDate || undefined,
+ status: data.status,
+ cycleYear: new Date().getFullYear(),
+ });
+ });
 
  if (!goal) {
  return null;
@@ -171,9 +171,9 @@ function CheckInModal({ isOpen, onClose, goal }) {
  <Button
  type="submit"
  className="rounded-xl bg-blue-600 text-white hover:bg-blue-700"
- disabled={mutation.isPending || !activePeriod.quarter}
+ disabled={submitMutation.isPending || !activePeriod.quarter}
  >
- {mutation.isPending ? (
+ {submitMutation.isPending ? (
  <>
  <Loader2 className="size-4 animate-spin" />
  Submitting...

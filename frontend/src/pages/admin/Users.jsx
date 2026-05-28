@@ -50,12 +50,11 @@ function UsersPage() {
  const deleteMutation = useMutation({
  mutationFn: (id) => deleteUser(id),
  onSuccess: () => {
- toast.success('User deleted');
- queryClient.invalidateQueries({ queryKey: ['users'] });
- setDeleteTarget(null);
+ queryClient.invalidateQueries(['users']);
+ toast.success('User deactivated!');
  },
  onError: (error) => {
- toast.error(error.response?.data?.message ||'Failed to delete user');
+ toast.error(error.response?.data?.message ||'Failed to deactivate user');
  },
  });
 
@@ -222,7 +221,10 @@ function UsersPage() {
  type="button"
  className="rounded-lg p-2 text-gray-500 transition hover:bg-rose-50 hover:text-rose-600"
  title="Delete"
- onClick={() => setDeleteTarget(user)}
+ onClick={() => {
+   if (window.confirm('Delete this user?')) deleteMutation.mutate(user._id);
+ }}
+ disabled={deleteMutation.isPending}
  >
  <Trash2 className="size-4" />
  </button>
