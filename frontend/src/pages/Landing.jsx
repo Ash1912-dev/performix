@@ -174,7 +174,7 @@ function Landing() {
           <motion.div variants={container} initial="hidden" animate="show">
             <motion.div variants={item}>
               <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-400">
-                ✦ Built for AtomQuest Hackathon 1.0
+                ✦ High Performance Goal Tracking
               </span>
             </motion.div>
 
@@ -468,14 +468,6 @@ function Landing() {
             >
               Login to Performix
             </button>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 border border-white/30 text-white px-8 py-3 rounded-xl font-semibold hover:border-white/60 transition-all duration-200"
-            >
-              <ExternalLink className="size-4" /> View on GitHub
-            </a>
           </div>
         </SectionReveal>
       </section>
@@ -483,7 +475,7 @@ function Landing() {
       {/* ─────── FOOTER ─────── */}
       <footer className="bg-slate-950 py-12 border-t border-slate-800">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid md:grid-cols-3 gap-8 items-start">
+          <div className="grid md:grid-cols-2 gap-8 items-start">
             <div>
               <div className="flex items-center gap-3">
                 <span className="flex size-9 items-center justify-center rounded-xl bg-blue-600 text-white font-bold text-sm">
@@ -499,20 +491,9 @@ function Landing() {
               <div>Built with MERN Stack + Groq AI</div>
               <div>Deployed on Vercel + Render</div>
             </div>
-            <div className="text-sm text-slate-400 space-y-1 md:text-right">
-              <div>Built for AtomQuest Hackathon 1.0</div>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition mt-1"
-              >
-                <ExternalLink className="size-3.5" /> GitHub Repository
-              </a>
-            </div>
           </div>
           <div className="mt-10 pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
-            © 2025 Performix. Built with ❤️ for AtomQuest
+            © 2025 Performix. Built with ❤️
           </div>
         </div>
       </footer>
