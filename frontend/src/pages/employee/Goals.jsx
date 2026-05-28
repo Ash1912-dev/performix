@@ -1,9 +1,9 @@
 import { useMemo, useState } from'react';
 import { useMutation, useQuery, useQueryClient } from'@tanstack/react-query';
-import { Lock, Pencil, Plus, Trash2 } from'lucide-react';
+import { Lock, Pencil, Plus, Trash2, Send } from'lucide-react';
 import toast from'react-hot-toast';
 
-import { deleteGoal, getMyGoals } from'@/api/goalApi';
+import { deleteGoal, getMyGoals, submitGoalSheet } from'@/api/goalApi';
 import GoalFormModal from'@/components/employee/GoalFormModal';
 import EmptyState from'@/components/shared/EmptyState';
 import LoadingSkeleton from'@/components/shared/LoadingSkeleton';
@@ -31,6 +31,17 @@ function Goals() {
  },
  onError: (err) => {
  toast.error(err.response?.data?.message || 'Cannot delete locked goal');
+ },
+ });
+
+ const submitMutation = useMutation({
+ mutationFn: submitGoalSheet,
+ onSuccess: () => {
+ queryClient.invalidateQueries(['myGoals']);
+ toast.success('Goal sheet submitted!');
+ },
+ onError: (err) => {
+ toast.error(err.response?.data?.message || 'Failed to submit');
  },
  });
 
@@ -71,6 +82,20 @@ function Goals() {
  Manage your goal portfolio
  </h1>
  </div>
+ <div className="flex flex-wrap gap-3">
+ {goalSheet?.status === 'draft' && totalWeightage === 100 ? (
+ <Button
+ type="button"
+ className="rounded-xl bg-green-600 text-white hover:bg-green-700 transition-all"
+ disabled={submitMutation.isPending}
+ onClick={() => {
+ if (window.confirm('Submit goals for approval?')) submitMutation.mutate();
+ }}
+ >
+ <Send className="size-4" />
+ {submitMutation.isPending ? 'Submitting...' : 'Submit Goal Sheet'}
+ </Button>
+ ) : null}
  <Button
  type="button"
  className="rounded-xl bg-blue-600 text-white hover:bg-blue-700"
@@ -82,6 +107,7 @@ function Goals() {
  <Plus className="size-4" />
  Add Goal
  </Button>
+ </div>
  </div>
 
  <Card>
