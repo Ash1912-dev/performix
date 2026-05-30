@@ -147,11 +147,7 @@ function Login() {
           </div>
         </div>
 
-        <div className="relative z-10">
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-medium text-blue-400">
-            ✦ Built for AtomQuest Hackathon 1.0
-          </span>
-        </div>
+
       </div>
 
       {/* RIGHT — login form */}

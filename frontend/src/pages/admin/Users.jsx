@@ -44,14 +44,15 @@ function UsersPage() {
  }),
  });
 
- const users = data || [];
- const totalPages = Math.ceil((data?.length || 0) / limit) || 1;
+ const users = data?.data || [];
+ const totalPages = Math.ceil((data?.total || 0) / limit) || 1;
 
  const deleteMutation = useMutation({
  mutationFn: (id) => deleteUser(id),
  onSuccess: () => {
- queryClient.invalidateQueries(['users']);
+ queryClient.invalidateQueries({ queryKey: ['users'] });
  toast.success('User deactivated!');
+ setDeleteTarget(null);
  },
  onError: (error) => {
  toast.error(error.response?.data?.message ||'Failed to deactivate user');
@@ -221,10 +222,7 @@ function UsersPage() {
  type="button"
  className="rounded-lg p-2 text-gray-500 transition hover:bg-rose-50 hover:text-rose-600"
  title="Delete"
- onClick={() => {
-   if (window.confirm('Delete this user?')) deleteMutation.mutate(user._id);
- }}
- disabled={deleteMutation.isPending}
+ onClick={() => setDeleteTarget(user)}
  >
  <Trash2 className="size-4" />
  </button>

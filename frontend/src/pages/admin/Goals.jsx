@@ -42,8 +42,9 @@ function GoalsPage() {
   const unlockMutation = useMutation({
     mutationFn: (goalId) => unlockGoal(goalId),
     onSuccess: () => {
-      queryClient.invalidateQueries(['adminGoals']);
+      queryClient.invalidateQueries({ queryKey: ['adminGoals'] });
       toast.success('Goal unlocked successfully!');
+      setUnlockTarget(null);
     },
     onError: () => toast.error('Failed to unlock goal')
   });
@@ -169,11 +170,7 @@ function GoalsPage() {
                             variant="outline"
                             size="sm"
                             className="rounded-lg text-xs"
-                            onClick={() => {
-                              if (window.confirm('Unlock this goal? Employee can edit it again.')) {
-                                unlockMutation.mutate(goal._id);
-                              }
-                            }}
+                            onClick={() => setUnlockTarget(goal)}
                             disabled={unlockMutation.isPending}
                           >
                             <LockOpen className="size-3.5" />
