@@ -70,7 +70,7 @@ function UserFormModal({ isOpen, onClose, existingUser }) {
  enabled: isOpen && selectedRole ==='employee',
  });
 
- const managers = Array.isArray(managersData) ? managersData : [];
+ const managers = Array.isArray(managersData?.data) ? managersData.data : (Array.isArray(managersData) ? managersData : []);
 
  useEffect(() => {
  if (isOpen && existingUser) {
@@ -116,13 +116,13 @@ function UserFormModal({ isOpen, onClose, existingUser }) {
  });
 
  const onSubmit = (data) => {
- const payload = { ...data };
- if (payload.role !=='employee') {
- delete payload.managerId;
- }
- if (!payload.managerId) {
- delete payload.managerId;
- }
+  const payload = { ...data };
+  if (payload.role !== 'employee') {
+    payload.managerId = null;
+  }
+  if (!payload.managerId) {
+    payload.managerId = null;
+  }
  if (isEdit) {
  updateMutation.mutate({ id: existingUser._id, data: payload });
  } else {
