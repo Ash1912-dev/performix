@@ -22,7 +22,7 @@ export const deleteRule = async (id) => {
 
 export const getEscalationLogs = async (params) => {
   const response = await api.get('/escalation/logs', { params });
-  return response.data.data;
+  return response.data;
 };
 
 export const resolveEscalation = async (id) => {
@@ -32,5 +32,5 @@ export const resolveEscalation = async (id) => {
 
 export const runEscalationManually = async () => {
   const response = await api.post('/escalation/run');
-  return response.data.data;
+  return response.data;
 };

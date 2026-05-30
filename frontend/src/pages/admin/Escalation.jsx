@@ -69,7 +69,7 @@ function EscalationPage() {
  });
 
  const rules = rulesData || [];
- const logs = logsData || [];
+ const logs = logsData?.data || [];
  const logTotalPages = logsData?.pages || 1;
 
  // Mutations
